@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../Img/libralyra.svg">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <title>LibraLyra - Login</title>
     <style>
         body {
@@ -26,7 +27,7 @@
             border: 2px solid black;
             padding-left: 0px;
             width: 490px;
-            height: 450px;
+            height: 500px;
             border-radius: 15px;
             padding-top: 48px;
             background-color: #ef823f;
@@ -67,20 +68,43 @@
             </div>
             <div style="padding-left: 17px;">
                 <h1 style="font-weight: 600;width: fit-content;margin-bottom: 0px; margin-left: 6%;padding: 0px;margin-top: 10px; font-size: 30px;">Login</h1>
-                <form action="">
+                <h2 style="font-weight: unset;width: fit-content;margin-bottom: 0px; margin-left: 6%;margin-top: 0px;font-size: 20px;padding: 0px;">for get started</h2>
+                <form id="ayam">
                     <div>
-                        <input type="text" name="username" id="username" style="margin-left: 6%;margin-top: 10px;width: 394px;margin-top: 10px;height: 40px;border-radius: 10px;" placeholder="Username">
+                        <input type="text" name="email" id="email" style="margin-left: 6%;margin-top: 10px;width: 394px;margin-top: 10px;height: 40px;border-radius: 10px;" placeholder="Email">
                     </div>
                     <div style="margin-top: 10px;">
                         <input type="password" name="password" id="password" style="margin-left: 6%;width: fit-content;margin-top: 10px;width: 394px;height: 40px;border-radius: 10px;" placeholder="Password">
                     </div>
                     <div style="margin-top: 10px;margin-bottom: 20px;">
-                        <button type="submit" style="font-size: 15px; font-weight: bold; margin-left: 6%; width: fit-content; margin-top: 10px; width: 400px; height: 40px; border-radius: 10px; background-color: #ffffff; color: #000000;">LOGIN</button>
+                        <button id="loginButton" type="submit" style="font-size: 15px; font-weight: bold; margin-left: 6%; width: fit-content; margin-top: 10px; width: 400px; height: 40px; border-radius: 10px; background-color: #ffffff; color: #000000;">LOGIN</button>
                     </div>
                 </form>
             </div>
             <p style="width: fit-content; margin: auto;padding-top: 20px;">Don't have an account? <a href="register.html" style="color: black; text-decoration: none;font-weight: 600;">Register</a></p>
         </div>
     </main>
+    <script>
+        $(document).ready(function() {
+        $(document).on('click', '#loginButton', function(e) {
+            e.preventDefault();
+            var formData = $('#ayam').serialize();
+            $.ajax({
+                type: "POST",
+                url: `http://localhost/aaSProjectWebpro/Backend/index.php/api/user/auth/login`,
+                contentType: "application/x-www-form-urlencoded",
+                data: formData,
+                success: function(response) {
+                    localStorage.setItem('token', response.token);
+                    alert("User login successfully");
+                    window.location.href = 'index.html';
+                },
+                error: function(xhr, status, error) {
+                    alert(JSON.parse(xhr.responseText).message);
+                }
+            });
+        });
+    });
+    </script>
 </body>
 </html>

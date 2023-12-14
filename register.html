@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../Img/libralyra.svg">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <title>LibraLyra</title>
     <style>
         body{
@@ -68,26 +69,51 @@
             <div style="padding-left: 17px;">
                 <h1 style="font-weight: 600;width: fit-content;margin-bottom: 0px; margin-left: 6%;padding: 0px;margin-top: 10px; font-size: 30px;">Register</h1>
                 <h2 style="font-weight: unset;width: fit-content;margin-bottom: 0px; margin-left: 6%;margin-top: 0px;font-size: 20px;padding: 0px;">to create an account</h2>
-                <form action="">
+                <form id="ayam">
                     <div>
                         <input type="text" name="username" id="username" style="margin-left: 6%;margin-top: 10px;width: 394px;margin-top: 10px;height: 40px;border-radius: 10px;" placeholder="Username">
                     </div>
-                    <div style="margin-top: 10px;">
+                    <div>
                         <input type="email" name="email" id="email" style="margin-left: 6%;margin-top: 10px;width: 394px;margin-top: 10px;height: 40px;border-radius: 10px;" placeholder="Email">
                     </div>
-                    <div style="margin-top: 10px;">
-                        <input type="password" name="password" id="password" style="margin-left: 6%;width: fit-content;margin-top: 10px;width: 394px;height: 40px;border-radius: 10px;" placeholder="Password">
+                    <div>
+                        <input type="text" name="nomor_telepon" id="nomor_telepon" style="margin-left: 6%;margin-top: 10px;width: 394px;margin-top: 10px;height: 40px;border-radius: 10px;" placeholder="Phone Number">
                     </div>
-                    <div style="margin-top: 10px;">
-                        <input type="password" name="confirmPassword" id="confirmPassword" style="margin-left: 6%;width: fit-content;margin-top: 10px;width: 394px;height: 40px;border-radius: 10px;" placeholder="Confirm Password">
+                    
+                    <div>
+                        <input type="text" name="alamat" id="alamat" style="margin-left: 6%;width: fit-content;margin-top: 10px;width: 394px;height: 40px;border-radius: 10px;" placeholder="Adress">
                     </div>
-                    <div style="margin-top: 10px;margin-bottom: 20px;">
-                        <button type="submit" style="font-size: 15px; font-weight: bold; margin-left: 6%; width: fit-content; margin-top: 10px; width: 400px; height: 40px; border-radius: 10px; background-color: #ffffff; color: #000000;">REGISTER</button>
+                    <div>
+                        <input type="password" name="password" id="password" style="margin-left: 6%;margin-top: 10px;width: 394px;margin-top: 10px;height: 40px;border-radius: 10px;" placeholder="Password">
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <button type="submit" id="submit" style="font-size: 15px; font-weight: bold; margin-left: 6%; width: fit-content; margin-top: 10px; width: 400px; height: 40px; border-radius: 10px; background-color: #ffffff; color: #000000;">REGISTER</button>
                     </div>
                 </form>
             </div>
             <p style="width: fit-content; margin: auto;padding-top: 20px;">Already have an account? <a href="login.html" style="color: black; text-decoration: none;font-weight: 600;">Login</a></p>
         </div>
     </main>
+    <script>
+        $(document).ready(function() {
+                $(document).on('click', '#submit', function(e) {
+                    e.preventDefault();
+                    var formData = $('#ayam').serialize();
+                    $.ajax({
+                        type: "POST",
+                        url: `http://localhost/aaSProjectWebpro/Backend/index.php/api/user/user/register`,
+                        contentType: "application/x-www-form-urlencoded",
+                        data: formData,
+                        success: function(response) {
+                            alert("Register successfully");
+                            window.location.href = 'login.html';
+                        },
+                        error: function(xhr, status, error) {
+                            alert(`Error creating user:${(JSON.parse(xhr.responseText).message.username) ? ("\n📌"+JSON.parse(xhr.responseText).message.username):""}${(JSON.parse(xhr.responseText).message.email) ? ("\n📌"+JSON.parse(xhr.responseText).message.email):""}${(JSON.parse(xhr.responseText).message.password) ? ("\n📌"+JSON.parse(xhr.responseText).message.password):""}${(JSON.parse(xhr.responseText).message.nomor_telepon) ? ("\n📌"+JSON.parse(xhr.responseText).message.nomor_telepon):""}${(JSON.parse(xhr.responseText).message.alamat) ? ("\n📌"+JSON.parse(xhr.responseText).message.alamat):""}\nPlease try again!`);
+                        }
+                    });
+                });
+            });
+    </script>
 </body>
 </html>

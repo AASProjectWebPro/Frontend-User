@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Store Website</title>
+    <title>Book Store Website</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Poppins&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Poppins&family=Varela&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="asset/dist/css/adminlte.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'poppins';
+    }
+    main{
+        width: 100%;
+        height: 92.5vh;
+        background-image: url(image/bg.png);
+        background-size: cover;
+        background-position: center;
+    }
+    section nav{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3); 
+        background: #fff;
+
+    }
+
+        nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        height: 80px;
+        background-color: #ef823f;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+        padding: 0 20px; 
+    }
+
+    nav a{
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+        position: relative;
+        background: none;
+        font-size: 18px;
+        margin: 17px;
+    }
+    nav a::before,
+    nav a::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 27%;
+        width: 0;
+        height: 3px;
+        background-color: white;
+        transition: width 0.1s ease;
+    }
+    nav a::before {
+        transform: translateX(-50%);
+    }
+    nav a::after {
+        transform: translateX(45%);
+    }
+    nav a:hover::before,
+    nav a:hover::after {
+        width: calc(50%); 
+    }
+    nav a:hover{
+        color: white;
+    }
+    button {
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+#logout:hover{
+    color: white;
+}
+li {
+  list-style-type: none; /* Remove default list bullets */
+  padding: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+}
+    </style>
+</head>
+<body>
+    <section>
+        <nav style="background-color: #ed8340;">
+            <div class="Logo" style="display: flex;justify-content: center; align-items: center;">
+                <img src="image/libralyra.svg" alt="" style="width: fit-content; height: 55px; display: block;">
+                <h1 style="font-family: 'Hedvig Letters Serif', serif;color: black;font-size: 30px;font-weight: bolder; padding-left: 2px;padding-top: 10px;">Libra<b style="font-family: 'Hedvig Letters Serif';color: white;">Lyra</b></h1>
+            </div>
+            <div>
+                <a href="index.html">Home</a>
+                <a href="#">Books</a>
+                <a href="#">History</a>
+                <a href="#">Profile</a>
+            </div>
+            <button id="logout" style="border:none;background:none;margin-left: 110px;" class="icon"><i class="fa fa-door-open fa-2x"></i></button>
+        </nav>
+    </section>  
+    <div class="card" style="margin: 20px;padding: 20px;box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);">
+        <div class="card-header" style="font-size: 20px; font-weight: bold;">
+            History Pengembalian
+        </div>
+        
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="ohayo" class="table table-bordered table-hovered">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>ISBN Buku</th>
+                            <th>Judul Buku</th>
+                            <th>Tanggal Peminjaman</th>
+                            <th>Tanggal Pengembalian</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            let token = localStorage.getItem('token');
+            $.ajax({
+                url: `http://localhost/aaSProjectWebpro/Backend/index.php/api/user/historypeminjaman`,
+                method: "GET",
+                dataType: "json",
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                success: function(data){
+                    var html = ``;
+                    var no = 1;
+                    $.each(data, function(key, value){
+                        html += `
+                            <tr>
+                                <td>${no++}</td>
+                                <td>${value.isbn_buku}</td>
+                                <td>${value.judul}</td>
+                                <td>${value.tanggal_peminjaman}</td>
+                                <td>${value.tanggal_pengembalian}</td>
+                            </tr>
+                            `;
+                    });
+                    $('#tbody').append(html);
+                },
+                error: function(xhr, status, error) {
+                // if (xhr.status === 401) {
+                //     alert("Anda belum login");
+                //     window.location.href = "login.html";
+                // } 
+        }
+                
+            });
+        });
+    </script>
+</body>
+</html>
