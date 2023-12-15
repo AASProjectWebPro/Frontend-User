@@ -1,0 +1,160 @@
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Store Website</title>
+    <title>Book Store Website</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Poppins&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Poppins&family=Varela&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="asset/dist/css/adminlte.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script defer src="init.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body style="background-image: url('image/bgUser.jpg');background-size: cover; background-position: top; display: flex; justify-content: center;font-family: poppins;">
+    <div style="width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;">
+        <section class="content">
+            <div class="container-fluid">
+              <div class="card">
+                <div class="card-header" style="background-color: #e98542;">
+                    <button id="back" type="button" class="btn btn-sm" style="float: right;" data-toggle="tooltip" data-placement="top" title="Close">
+                        <i class="fas fa-times" style="color: white;"></i>
+                      </button>
+                      <h3 style="color: white;" class="card-title">Detail Buku</h3>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <img id="gambar" src="" style="width: 600px;height: 300px;object-fit: cover;" alt="Book Cover" class="img-fluid">
+                    </div>
+                    <div class="col-md-8">
+                      <table class="table">
+                        <tr>
+                          <th>Judul</th>
+                          <td id="judul"></td>
+                        </tr>
+                        <tr>
+                          <th>ISBN</th>
+                          <td id="isbn"></td>
+                        </tr>
+                        <tr>
+                          <th>Pengarang</th>
+                          <td id="pengarang"></td>
+                        </tr>
+                        <tr>
+                          <th>Jenis</th>
+                          <td id="jenis"></td>
+                        </tr>
+                        <tr>
+                          <th>Penerbit</th>
+                          <td id="penerbit"></td>
+                        </tr>
+                        <tr>
+                          <th>Tahun Terbit</th>
+                          <td id="tahun_terbit"></td>
+                        </tr>
+                        <tr>
+                            <th>Stock</th>
+                            <td id="stock"></td>
+                          </tr>
+                        <tr>
+                          <th>Deskripsi</th>
+                          <td id="deskripsi"></td>
+                        </tr>
+                      </table>             
+                    </div>
+                  </div>
+                  
+                </div>
+                <div style="display: flex;justify-content: center;align-items: center;margin-top: 50px; margin: 10px;">
+                    <button id="submit" class="btn btn-success" style="width: 100%;">
+                        Peminjaman
+                    </button>
+                  </div>
+              </div>
+              
+            </div>
+            
+          </section>
+    </div>
+    <script>
+        $(document).ready(function(){
+            var bookId = new URLSearchParams(window.location.search).get('id');
+            if (!bookId) {
+                alert("Book ID not found");
+                return window.location.href = 'buku.html';
+            }
+            let token = localStorage.getItem('token');
+            $.ajax({
+                url: `http://localhost/${parentPath}/Backend/index.php/api/user/buku?id=${bookId}`,
+                method: "GET",
+                dataType: "json",
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                success: function(data){
+                    $("#gambar").attr("src", data.gambar);
+                    $('#judul').html(data.judul);
+                    $('#isbn').html(data.isbn);
+                    $('#jenis').html(data.jenis);
+                    $('#pengarang').html(data.pengarang);
+                    $('#penerbit').html(data.penerbit);
+                    $('#tahun_terbit').html(data.tahun_terbit);
+                    $('#stock').html(data.stock);
+                    $('#deskripsi').html(data.deskripsi);
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.status === 401) {
+                        alert("Anda belum login");
+                        window.location.href = "login.html";
+                    } 
+                 }
+            });
+        });
+
+        $(document).ready(function(){
+                $("#back").on("click", function(){
+                window.location.href = "buku.html";
+            });
+        });
+
+        $(document).ready(function() {
+                $(document).on('click', '#submit', function() {
+                    var bookId = new URLSearchParams(window.location.search).get('id');
+                    if (!bookId) {
+                        alert("Book ID not found");
+                        return window.location.href = 'buku.html';
+                    }
+                    let token = localStorage.getItem('token');
+                    $.ajax({
+                        type: "POST",
+                        url: `http://localhost/${parentPath}/Backend/index.php/api/user/TransaksiPeminjaman`,
+                        contentType: "application/x-www-form-urlencoded",
+                        headers: {
+                             'Authorization': 'Bearer ' + token
+                        },
+                        data: {"id_buku":bookId},
+                        success: function(response) {
+                            alert("Peminjaman successfully");
+                            window.location.href = 'buku.html';
+                        },
+                        error: function(xhr, status, error) {
+                            if (xhr.status === 401) {
+                                alert("Anda belum login");
+                                // window.location.href = "login.html";
+                            }else if(JSON.parse(xhr.responseText).message.id_user=="The ID User field must contain a unique value."){
+                                alert(`Error creating user:\n📌User masih meminjam buku${(JSON.parse(xhr.responseText).message.id_buku) ? ("\n📌"+JSON.parse(xhr.responseText).message.id_buku):""}\nPlease try again!`);
+                            }
+                            else{
+                                alert(`Error creating user:${(JSON.parse(xhr.responseText).message.id_buku) ? ("\n📌"+JSON.parse(xhr.responseText).message.id_buku):""}\nPlease try again!`);
+                            }
+                        }
+                    });
+                });
+            });
+    </script>
+</body>

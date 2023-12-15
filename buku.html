@@ -97,13 +97,12 @@
 #logout:hover{
     color: white;
 }
-li {
-  list-style-type: none; /* Remove default list bullets */
-  padding: 0; /* Remove default padding */
-  margin: 0; /* Remove default margin */
+p{
+    line-height: 0.3;
 }
     </style>
 </head>
+
 <body>
     <section>
         <nav style="background-color: #ed8340;">
@@ -113,42 +112,49 @@ li {
             </div>
             <div>
                 <a href="index.html">Home</a>
-                <a href="buku.html">Books</a>
-                <a href="#">History</a>
+                <a href="#">Books</a>
+                <a href="histori.html">History</a>
                 <a href="#">Profile</a>
             </div>
             <button id="logout" style="border:none;background:none;margin-left: 110px;" class="icon"><i class="fa fa-door-open fa-2x"></i></button>
         </nav>
     </section>  
-    <div class="card" style="margin: 20px;padding: 20px;box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);">
-        <div class="card-header" style="font-size: 20px; font-weight: bold;">
-            History Pengembalian
+    <div class="container-fluid" style="margin-top: 7px;">
+        <div id="alert" class="alert" style="display: none;background-color: red; color: white; margin-bottom: 6px;" role="alert">
+                Kamu masuh meminjam buku!
+            <button type="button" class="float-right">Details</button>
         </div>
-        
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="ohayo" class="table table-bordered table-hovered">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>ISBN Buku</th>
-                            <th>Judul Buku</th>
-                            <th>Tanggal Peminjaman</th>
-                            <th>Tanggal Pengembalian</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody">
-                        
-                    </tbody>
-                </table>
-            </div>
+        <div class="row" id="cardku">
+            
+            
         </div>
     </div>
     <script>
         $(document).ready(function(){
             let token = localStorage.getItem('token');
             $.ajax({
-                url: `http://localhost/${parentPath}/Backend/index.php/api/user/historypeminjaman`,
+                url: `http://localhost/${parentPath}/Backend/index.php/api/user/transaksipeminjaman/alert`,
+                method: "GET",
+                dataType: "json",
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                success:function(){
+                    $("#alert").hide();
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.status === 502) {
+                        $("#alert").show();
+                    }
+                 }
+            });
+        });
+
+
+        $(document).ready(function(){
+            let token = localStorage.getItem('token');
+            $.ajax({
+                url: `http://localhost/${parentPath}/Backend/index.php/api/user/buku`,
                 method: "GET",
                 dataType: "json",
                 headers: {
@@ -159,16 +165,24 @@ li {
                     var no = 1;
                     $.each(data, function(key, value){
                         html += `
-                            <tr>
-                                <td>${no++}</td>
-                                <td>${value.isbn_buku}</td>
-                                <td>${value.judul}</td>
-                                <td>${value.tanggal_peminjaman}</td>
-                                <td>${value.tanggal_pengembalian}</td>
-                            </tr>
+                        <div class="col-md-2" >
+                            <div class="card">
+                                <div class="card-header" style="background-color: #ed8340;">
+                                    <h5 class="card-title" style="color: white;width: 94%;text-align: center;">${value.judul}</h5>
+                                </div>
+                                <div class="card-body" style="background-color: rgb(255, 255, 255);display:flex;flex-direction:column;justify-content: center; align-items: center;">
+                                    <img src="${value.gambar}" style="width: 300px;height: 300px;object-fit: cover;" class="card-img-top" alt="Book Cover">
+                                    <p class="card-text" style="margin-top: 30px;">Jenis: ${value.jenis}</p>
+                                    <p class="card-text"">ISBN: ${value.isbn}</p>
+                                    <p class="card-text">Pengarang: ${value.pengarang}</p>
+                                    <p class="card-text"style="margin-bottom: 10px;">Stock: ${value.stock}</p>
+                                    <a href="booksDetail.html?id=${value.id}" style="display: inline-block;width: 100%;margin-top: 10px;background-color: #eb8441;color: white;text-decoration: none;padding: 10px;text-align: center;">Details</a>
+                                </div>
+                            </div>
+                        </div>
                             `;
                     });
-                    $('#tbody').append(html);
+                    $('#cardku').append(html);
                 },
                 error: function(xhr, status, error) {
                 if (xhr.status === 401) {
@@ -181,4 +195,3 @@ li {
         });
     </script>
 </body>
-</html>
