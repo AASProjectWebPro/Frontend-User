@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="image/libralyra.svg">
+    <title>LibraLyra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Poppins&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Poppins&family=Varela&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="asset/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="asset/plugins/fontawesome-free/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script defer src="init.js"></script>
+    <title>LibraLyra</title>
+</head>
+<style>
+    body, html, :root {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+        background-position: center;
+    }
+    main{
+        font-family: "poppins";
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background-image: url("image/bgUser.jpg");
+        background-position: center;
+        background-size: cover;}
+
+button {
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+#submit{
+    background-color: #76a7d3;
+}
+#submit:hover{
+    background-color: #5c78b4;
+}
+#kembali{
+    border: #eb8441 1px solid;
+    color: #eb8441;
+}
+#kembali:hover{
+    background-color: #eb8441;
+    color: white;
+}
+</style>
+
+<body>
+    
+    <main>
+        <div class="container">
+            <div class="row justify-content-center" >
+                <div class="col-md-5">
+                    <form id="userForm" >
+                        <div class="card shadow" >
+                            <div class="card-header text-white" style="background-color: #ed8340; padding: 20px;">
+                                <h5 class="mb-0" style="text-align: center; font-weight: bold;">Ganti Password</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="current_pw">Current Password</label>
+                                    <input type="password" id="current_pw" class="form-control" name="current_pw" placeholder="Enter Username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="new_pw">New Password</label>
+                                    <input type="password" id="new_pw" class="form-control" name="new_pw" placeholder="Enter Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="repeat_new_pw">Repeat New Password</label>
+                                    <input id="password" type="tel" class="form-control" name="repeat_new_pw" placeholder="Enter Nomor Telepon" required>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button id="kembali" type="button" style="font-weight: 4X00;" class="btn" onclick="return window.location.href = 'profile.html';">Kembali</button>
+                                <button id="submit" type="button" style="color: white; font-weight: 4X00;" class="btn float-right">Simpan</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        $(document).ready(function() {
+                $(document).on('click', '#submit', function() {
+                    var formData = $('#userForm').serialize();
+                    let token = localStorage.getItem('token');
+                    $.ajax({
+                        type: "PATCH",
+                        url: `http://localhost/${parentPath}/Backend/index.php/api/user/user/password`,
+                        contentType: "application/x-www-form-urlencoded",
+                        headers: {
+                                'Authorization': 'Bearer ' + token
+                            },
+                        data: formData,
+                        success: function(response) {
+                            alert("User edited successfully");
+                            window.location.href = 'profile.html';
+                        },
+                        error: function(xhr, status, error) {
+                            if (xhr.status === 401) {
+                                alert("Anda belum login");
+                                window.location.href = "login.html";
+                        }else{ 
+                            alert(`Error edit user:${(JSON.parse(xhr.responseText).message.id) ? ("\n📌"+JSON.parse(xhr.responseText).message.id):""}${(JSON.parse(xhr.responseText).message.repeat_new_pw) ? ("\n📌"+JSON.parse(xhr.responseText).message.repeat_new_pw):""}${(JSON.parse(xhr.responseText).message.new_pw) ? ("\n📌"+JSON.parse(xhr.responseText).message.new_pw):""}${(JSON.parse(xhr.responseText).message.current_pw) ? ("\n📌"+JSON.parse(xhr.responseText).message.current_pw):""}\nPlease try again!`);
+                        }
+                    }
+                    });
+                });
+            });
+    </script>
+</body>
+</html>
