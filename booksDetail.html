@@ -145,7 +145,7 @@
                         error: function(xhr, status, error) {
                             if (xhr.status === 401) {
                                 alert("Anda belum login");
-                                // window.location.href = "login.html";
+                                window.location.href = "login.html";
                             }else if(JSON.parse(xhr.responseText).message.id_user=="The ID User field must contain a unique value."){
                                 alert(`Error creating user:\n📌User masih meminjam buku${(JSON.parse(xhr.responseText).message.id_buku) ? ("\n📌"+JSON.parse(xhr.responseText).message.id_buku):""}\nPlease try again!`);
                             }
