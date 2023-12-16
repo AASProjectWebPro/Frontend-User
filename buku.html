@@ -138,9 +138,6 @@ p{
                 headers: {
                     'Authorization': 'Bearer ' + token
                 },
-                success:function(){
-                    $("#alert").hide();
-                },
                 error: function(xhr, status, error) {
                     if (xhr.status === 502) {
                         $("#alert").show();
