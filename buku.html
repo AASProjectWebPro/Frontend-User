@@ -119,12 +119,11 @@ p{
             <button id="logout" style="border:none;background:none;margin-left: 110px;" class="icon"><i class="fa fa-door-open fa-2x"></i></button>
         </nav>
     </section>  
+    <div id="wowo">
+
+    </div>
     <div class="container-fluid" style="margin-top: 7px;">
-        <div id="alert" class="bg-warning alert" style="display: none; margin-bottom: 6px; padding-bottom: 0px;" role="alert">
-            <marquee behavior="scroll" loop="5" width="100%" direction="left">
-                <b>🚨 Sekedar mengingatkan, kamu masih meminjam buku. Silahkan kembalikan terlebih dahulu sebelum meminjam buku lainnya 🙏.</b>
-            </marquee>      
-        </div>
+        
         <div class="row" id="cardku">
             
             
@@ -140,9 +139,17 @@ p{
                 headers: {
                     'Authorization': 'Bearer ' + token
                 },
+                success: function(data){
+                    $("#alert").hide();
+                },
                 error: function(xhr, status, error) {
                     if (xhr.status === 502) {
-                        $("#alert").show();
+                        $("#wowo").html(`<div id="alert" class="bg-warning alert" style="margin:6px;margin-bottom: 6px; padding-bottom: 0px;" role="alert">
+            <marquee behavior="scroll" loop="5" width="100%" direction="left">
+                <b>🚨 Sekedar mengingatkan, kamu masih meminjam buku. Silahkan kembalikan terlebih dahulu sebelum meminjam buku lainnya 🙏.</b>
+            </marquee>      
+        </div>`)
+                        
                     }
                  }
             });
@@ -170,10 +177,10 @@ p{
                                 </div>
                                 <div class="card-body" style="background-color: rgb(255, 255, 255);display:flex;flex-direction:column;justify-content: center; align-items: center;">
                                     <img src="${value.gambar}" style="width: 300px;height: 300px;object-fit: cover;" class="card-img-top" alt="Book Cover">
-                                    <p class="card-text" style="margin-top: 30px;">Jenis: ${value.jenis}</p>
-                                    <p class="card-text"">ISBN: ${value.isbn}</p>
-                                    <p class="card-text">Pengarang: ${value.pengarang}</p>
-                                    <p class="card-text"style="margin-bottom: 10px;">Stock: ${value.stock}</p>
+                                    <p class="card-text" style="margin-top: 30px;">Jenis : ${value.jenis}</p>
+                                    <p class="card-text"">ISBN : ${value.isbn}</p>
+                                    <p class="card-text">Pengarang : ${value.pengarang}</p>
+                                    <p class="card-text"style="margin-bottom: 10px;">Stock : ${value.stock}</p>
                                     <a href="booksDetail.html?id=${value.id}" style="border-radius:5px;display: inline-block;width: 100%;margin-top: 10px;background-color: #eb8441;color: white;text-decoration: none;padding: 10px;text-align: center;">Details</a>
                                 </div>
                             </div>
