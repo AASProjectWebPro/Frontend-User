@@ -140,18 +140,22 @@ p{
                     'Authorization': 'Bearer ' + token
                 },
                 success: function(data){
-                    $("#alert").hide();
-                },
-                error: function(xhr, status, error) {
-                    if (xhr.status === 502) {
+                    if (data.status === 'peminjaman') {
                         $("#wowo").html(`<div id="alert" class="bg-warning alert" style="margin:6px;margin-bottom: 6px; padding-bottom: 0px;" role="alert">
             <marquee behavior="scroll" loop="5" width="100%" direction="left">
-                <b>🚨 Sekedar mengingatkan, kamu masih meminjam buku. Silahkan kembalikan terlebih dahulu sebelum meminjam buku lainnya 🙏.</b>
-            </marquee>      
+                <b>🚨 Sekedar mengingatkan, kamu masih meminjam buku. Silahkan kembalikan buku yang kamu pinjam terlebih dahulu sebelum meminjam buku lainnya 🙏.</b>
+            </marquee>
         </div>`)
-                        
+                     }else if(data.status === 'pending'){
+                        $("#wowo").html(`<div id="alert" class="bg-warning alert" style="margin:6px;margin-bottom: 6px; padding-bottom: 0px;" role="alert">
+            <marquee behavior="scroll" loop="5" width="100%" direction="left">
+                <b>🚨 Sekedar mengingatkan, kamu masih memesan buku. Silahkan selesaikan transaksi peminjaman buku yang sedang berlangsung sebelum meminjam buku lainnya 🙏.</b>
+            </marquee>
+        </div>`)
                     }
-                 }
+                }
+
+
             });
         });
 
